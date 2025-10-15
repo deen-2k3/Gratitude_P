@@ -2,17 +2,23 @@ import streamlit as st
 from pymongo import MongoClient
 import datetime
 import requests
+from dotenv import load_dotenv
 
 # -----------------------------
 # 🌸 CONFIG & CONNECTION
 # -----------------------------
+load_dotenv()  # Load variables from .env
 st.set_page_config(page_title="🌼 My Gratitude Journal", page_icon="🌸", layout="centered")
 
-MONGO_URI = "mongodb+srv://deenbandhusingh335_db_user:Ev4EiJTa9P9OPPMx@cluster0.y4umx0s.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # Change this to your Atlas URI
-client = MongoClient(MONGO_URI)
-db = client["gratitude_journal"]
-users_collection = db["users"]
-entries_collection = db["entries"]
+MONGO_URI = os.getenv("MONGO_URI")
+
+if not MONGO_URI:
+    st.error("MongoDB connection string not found! Please check your .env or secrets settings.")
+else:
+ client = MongoClient(MONGO_URI)
+ db = client["gratitude_journal"]
+ users_collection = db["users"]
+ entries_collection = db["entries"]
 
 # -----------------------------
 # 🌤 GET DAILY QUOTE FROM API
